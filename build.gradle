@@ -1,3 +1,8 @@
+// ============================================================
+// xlsx-importer — XLSX → ClickHouse bulk import service
+// Author : clevdev https://github.com/clevdev/clickhouse-xlsx-importer
+// License: Apache 2.0
+// ============================================================
 plugins {
     id 'java'
     id 'idea'
