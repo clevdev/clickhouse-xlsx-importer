@@ -1,0 +1,83 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: xlsx-importer
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/importdb
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: PostgresPool
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 52MB
+
+clickhouse:
+  # Set to true in integration test profile to use plain MergeTree() (no ZooKeeper)
+  use-plain-merge-tree-in-tests: false
+
+  node1:
+    url: jdbc:ch://localhost:8123/default
+    username: default
+    password: ""
+    pool:
+      pool-name: CHNode1Pool
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+
+  node2:
+    url: jdbc:ch://localhost:8124/default
+    username: default
+    password: ""
+    pool:
+      pool-name: CHNode2Pool
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+
+# springdoc 2.8.x — compatible with Spring MVC 6.2 (PathPatternParser)
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    display-request-duration: true
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+  default-produces-media-type: application/json
+
+import:
+  batch-size: 1000
+
+logging:
+  level:
+    com.example.xlsximporter: DEBUG
+    com.zaxxer.hikari: INFO
+    com.clickhouse: WARN
+    org.hibernate.SQL: WARN

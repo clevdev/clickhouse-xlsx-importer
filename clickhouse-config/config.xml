@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<clickhouse>
+    <!-- Cluster topology: 2 shards, 1 replica each -->
+    <remote_servers>
+        <my_cluster>
+            <shard>
+                <internal_replication>true</internal_replication>
+                <replica>
+                    <host>clickhouse1</host>
+                    <port>9000</port>
+                    <user>default</user>
+                    <password></password>
+                </replica>
+            </shard>
+            <shard>
+                <internal_replication>true</internal_replication>
+                <replica>
+                    <host>clickhouse2</host>
+                    <port>9000</port>
+                    <user>default</user>
+                    <password></password>
+                </replica>
+            </shard>
+        </my_cluster>
+
+        <!-- Replicated cluster: 1 shard, 2 replicas (used by ReplicatedMergeTree) -->
+        <my_replicated_cluster>
+            <shard>
+                <internal_replication>true</internal_replication>
+                <replica>
+                    <host>clickhouse1</host>
+                    <port>9000</port>
+                    <user>default</user>
+                    <password></password>
+                </replica>
+                <replica>
+                    <host>clickhouse2</host>
+                    <port>9000</port>
+                    <user>default</user>
+                    <password></password>
+                </replica>
+            </shard>
+        </my_replicated_cluster>
+    </remote_servers>
+
+    <!-- Zookeeper for ReplicatedMergeTree coordination -->
+    <zookeeper>
+        <node>
+            <host>zookeeper</host>
+            <port>2181</port>
+        </node>
+    </zookeeper>
+
+    <listen_host>0.0.0.0</listen_host>
+
+    <logger>
+        <level>information</level>
+        <console>1</console>
+    </logger>
+</clickhouse>

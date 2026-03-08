@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'org.springframework.boot' version '3.5.0' apply false
+    id 'io.spring.dependency-management' version '1.1.5' apply false
+}
+
+ext {
+    clickhouseJdbcVersion = '0.6.3'
+    springdocVersion      = '2.8.8'
+    poiVersion            = '5.2.5'
+    testcontainersVersion = '1.19.8'
+    lombokVersion         = '1.18.32'
+}
+
+idea {
+    project {
+        jdkName = '21'
+        languageLevel = '21'
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    idea {
+        module {
+            downloadJavadoc = false
+            downloadSources = true
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+        maxParallelForks = 1
+        systemProperty 'gradle.user.home', gradle.gradleUserHomeDir.absolutePath
+        jvmArgs '-Xmx512m', '-Dfile.encoding=UTF-8'
+        testLogging {
+            events 'passed', 'failed', 'skipped'
+            exceptionFormat 'full'
+        }
+    }
+
+}

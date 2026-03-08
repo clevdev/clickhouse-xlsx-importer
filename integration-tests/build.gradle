@@ -1,0 +1,68 @@
+// ============================================================
+// xlsx-importer — XLSX → ClickHouse bulk import service
+// Author : clevdev https://github.com/clevdev/clickhouse-xlsx-importer
+// License: Apache 2.0
+// ============================================================
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+description = 'Integration tests — requires Docker'
+
+bootJar.enabled = false
+jar.enabled     = false
+
+sourceSets {
+    main {
+        java.srcDirs      = []
+        resources.srcDirs = []
+    }
+    test {
+        java.srcDirs      = ['src/test/java']
+        resources.srcDirs = ['src/test/resources']
+    }
+}
+
+dependencies {
+    testImplementation project(':app')
+
+    // Spring Boot
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.postgresql:postgresql'
+    testImplementation 'com.zaxxer:HikariCP'
+
+    // ClickHouse JDBC
+    testImplementation("com.clickhouse:clickhouse-jdbc:${clickhouseJdbcVersion}:all") {
+        transitive = false
+    }
+
+    // Apache POI
+    testImplementation "org.apache.poi:poi:${poiVersion}"
+    testImplementation "org.apache.poi:poi-ooxml:${poiVersion}"
+
+    // Testcontainers
+    testImplementation platform("org.testcontainers:testcontainers-bom:${testcontainersVersion}")
+    testImplementation 'org.testcontainers:testcontainers'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:clickhouse'
+
+    // Lombok
+    testCompileOnly        "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+tasks.named('test') {
+    description = 'Runs integration tests via Testcontainers — Docker required'
+    group       = 'verification'
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}

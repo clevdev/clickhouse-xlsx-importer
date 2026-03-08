@@ -1,0 +1,39 @@
+# Unit tests use @ExtendWith(MockitoExtension.class) — no Spring context loaded.
+# This file is a placeholder so Spring does not complain if it IS loaded in some tests.
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
+
+clickhouse:
+  use-plain-merge-tree-in-tests: true
+  node1:
+    url: jdbc:ch://localhost:18123/default
+    username: default
+    password: ""
+    pool:
+      pool-name: UnitTestNode1
+      maximum-pool-size: 1
+      connection-timeout: 1000
+      connection-test-query: SELECT 1
+  node2:
+    url: jdbc:ch://localhost:18124/default
+    username: default
+    password: ""
+    pool:
+      pool-name: UnitTestNode2
+      maximum-pool-size: 1
+      connection-timeout: 1000
+      connection-test-query: SELECT 1
+
+logging:
+  level:
+    root: WARN

@@ -1,0 +1,65 @@
+# Spring profile "it" — used by integration-tests module.
+# All datasource URLs are overridden at runtime by @DynamicPropertySource (Testcontainers).
+# These placeholder values are never actually used.
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:15432/importdb_it
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: ITPostgresPool
+      maximum-pool-size: 3
+      minimum-idle: 1
+      connection-timeout: 10000
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
+
+clickhouse:
+  # MergeTree engine — no ZooKeeper needed in single-node test containers
+  use-plain-merge-tree-in-tests: true
+
+  node1:
+    url: jdbc:ch://localhost:18123/default
+    username: default
+    password: ""
+    pool:
+      pool-name: ITCHNode1Pool
+      maximum-pool-size: 3
+      minimum-idle: 1
+      connection-timeout: 10000
+      connection-test-query: SELECT 1
+
+  node2:
+    url: jdbc:ch://localhost:18124/default
+    username: default
+    password: ""
+    pool:
+      pool-name: ITCHNode2Pool
+      maximum-pool-size: 3
+      minimum-idle: 1
+      connection-timeout: 10000
+      connection-test-query: SELECT 1
+
+import:
+  batch-size: 100
+
+springdoc:
+  api-docs:
+    enabled: false
+
+logging:
+  level:
+    root: WARN
+    com.example.xlsximporter: INFO
+    com.zaxxer.hikari: WARN
+    com.clickhouse: WARN
